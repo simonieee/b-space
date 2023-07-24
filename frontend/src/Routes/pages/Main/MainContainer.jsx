@@ -51,7 +51,11 @@ const MainContainer = () => {
   }, [handleLoading, isSuccess]);
 
   useEffect(() => {
-    console.log(ipfsUrl);
+    if (ipfsUrl.length > 0) {
+      write?.();
+      setIpfsUrl("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ipfsUrl]);
   /* Functions */
   /**
@@ -111,11 +115,11 @@ const MainContainer = () => {
 
   const handleMint = async (file) => {
     handleLoading(!isSuccess);
-    const ipfsimage = await handleOnIpfs(file);
+    const ipfsImage = await handleOnIpfs(file);
     const metadata = {
       name: nftInfo.name,
       description: nftInfo.description,
-      image: `https://nftstorage.link/ipfs/${ipfsimage.value.cid}/${ipfsimage.value.files[0].name}`,
+      image: `https://nftstorage.link/ipfs/${ipfsImage.value.cid}/${ipfsImage.value.files[0].name}`,
     };
     const jsonFile = new Blob([JSON.stringify(metadata)], {
       type: "application/json",
@@ -128,9 +132,7 @@ const MainContainer = () => {
     setIpfsUrl(
       `https://nftstorage.link/ipfs/${result.value.cid}/${result.value.files[0].name}`
     );
-    if (result) {
-      write?.();
-    }
+
     return result;
   };
   console.log(ipfsUrl);
